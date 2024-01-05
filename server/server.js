@@ -66,13 +66,14 @@ app.get('/login/:email/:password', async (req,res) => {
         return;
     }
     const props = result.records[0].get(0).properties;
+    const userId = result.records[0].get(0).elementId;
+    console.log(userId);
 
     bcrypt.compare(password, props.password, (err, result) =>{
         if(result === true){
-            const token = jwt.sign({username: props.username}, 'secret-key', {
+            const token = jwt.sign({userId: userId}, 'secret-key', {
                 expiresIn: '1h'
             })
-            console.log(props.username);
             res.cookie('jwt',token);
             res.status(200).send({username: props.username, email: props.email});
         }else{
@@ -83,11 +84,13 @@ app.get('/login/:email/:password', async (req,res) => {
 
 })
 
-app.get('/proba', verifyToken, (req,res) =>{
-    //
-    console.log(req.username);
-    res.send({username: req.username});
-})
+// app.get('/proba', verifyToken, async (req,res)=>{
+
+//     const id = req.userId;
+//     const result = await session.run('match (u) where elementId(u)="'+id+'" return u;');
+//     console.log(result.records[0].get(0));
+    
+// })
 
 
 function verifyToken(req, res, next) {
@@ -97,7 +100,7 @@ function verifyToken(req, res, next) {
     if (!token) return res.status(401).send({ error: 'Access denied' });
     try {
         const decoded = jwt.verify(token, 'secret-key');
-        req.username = decoded.username;
+        req.userId = decoded.userId;
         next();
     }catch (error) {
         res.status(401).send({ error: 'Invalid token' });

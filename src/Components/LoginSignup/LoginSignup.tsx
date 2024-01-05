@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { loginUser, registerUser } from "../../services/services";
 
-function LoginSignup(){
+function LoginSignup({props}:any){
 
+    const { isLoggedIn, setIsLoggedIn } = props;
     const [ signupLogin , setSignupLogin ] = useState('signup');
     const [ errorMsg, setErrorMsg ] = useState('');
 
@@ -39,9 +40,11 @@ function LoginSignup(){
                 
             }).then(data=>{
                 console.log(data);
+                setIsLoggedIn(true);
             }).catch(err => {
                 console.log(err);
             });
+            
             return;
         }
         if(action === 'signup'){

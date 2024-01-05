@@ -8,8 +8,8 @@ body {
   
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(rgb(0, 81, 255),rgb(130, 7, 201));
-
+  /*background: linear-gradient(rgb(0, 81, 255),rgb(130, 7, 201));*/
+  background-color: rgba(228, 227, 227, 0.664);
 }
 
 code {
