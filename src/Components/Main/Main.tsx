@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Main.css';
 import React from "react";
 import Movie from "../Movie/Movie";
+import Movies from "../Movies/Movies";
 
 
 
@@ -25,8 +26,8 @@ function Main(){
         </div>
 
         <div className='movies-div'>
-            
-        </div>
+            <Movies/>
+         </div>
     </>
     );
 }
