@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Movie from "../Movie/Movie";
 import { movie } from "../../models/movie";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
-function Movies(){
+interface movieProps{
+    movieDetails: null | movie,
+    setMovieDetails: (value: movie | null) => void;
+}
 
+function Movies({ movieDetails, setMovieDetails } : movieProps){
+
+    
     const [ moviesList, setMoviesList ] = useState([]);
-    const [ movieDetails, setMovieDetails ] = useState(null);
 
     useEffect(()=>{
 
@@ -14,18 +20,19 @@ function Movies(){
 
     return(
         <>
-            {moviesList.map(m => <Movie movieProp={m}/>)}
+        {moviesList.map((m: movie) => {
             
-            {movieDetails?
-            
-            <div className="details-container-div">
-                <div className="details-content-div">
-
-                </div>
+            <div>
+                <img src={m.imgSource} alt={m.title} className="movie-img"/>
+                <h4 className="movie-name">{m.title + " (" + m.year + ")"}</h4>
+                    <div className="rating-div">
+                        <FontAwesomeIcon icon={faStar}/>
+                        <p>{m.rating + "/10"}</p>
+                    </div>
             </div>
-            :
-            <></>
-            }
+            })
+        }
+            
         </>
     );    
 }

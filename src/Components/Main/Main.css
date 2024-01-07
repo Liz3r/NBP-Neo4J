@@ -15,3 +15,28 @@
     margin-top: 5px;
     margin: 5px auto;
 }
+
+.dialog-box-div{
+    position: absolute;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.411);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-content{
+    width: 50vw;
+    height: 50vh;
+    border-radius: 25px;
+    background-color: white;
+
+    
+}
+
+.add-movie-btn{
+    position: absolute;
+    left: 20px;
+}

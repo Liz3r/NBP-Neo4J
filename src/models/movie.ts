@@ -4,6 +4,7 @@ export interface movie{
     genre: string,
     rating: number,
     imgSource: string,
+    description: string,
 
     director: string,
     cast: Array<string>
