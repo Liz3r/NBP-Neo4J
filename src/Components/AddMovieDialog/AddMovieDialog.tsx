@@ -1,66 +1,98 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './addMovieDialog.css';
+import { movie } from '../../models/movie';
+import { addMovie } from '../../services/services';
 
 function AddMovieDialog(){
 
+    const [ jsonErrorMsg, setJsonErrorMsg ] = useState('');
+    const textRef = useRef<HTMLTextAreaElement>(null);
+    
 
-    const [ title, setTitle ] = useState('');
-    const [ year, setYear ] = useState('');
-    const [ rating, setRating ] = useState('');
-    const [ imgSrc, setImgSrc ] = useState('');
-    const [ description, setDescription ] = useState('');
-    const [ director, setDirector ] = useState('');
-    const [ actors, setActors ] = useState([]);
+
+    function addMovies(value: string){
+
+        //regExp check
+        const moviesList: Array<movie> = JSON.parse(value);
+        //console.log(obj);
+
+        var err = false;
+        moviesList.forEach( (m,index) => {
+            if(err)
+                return;
+            console.log(index);
+            if(!(m.actors?true:false) || m.actors == null){
+                setJsonErrorMsg('actors property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.description?true:false) || m.description == ''){
+                setJsonErrorMsg('description propery invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.director?true:false) || m.director == ''){
+                setJsonErrorMsg('director property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.genre?true:false) || m.genre == ''){
+                setJsonErrorMsg('genre property invalid or null, element index: '+index);
+                err = true;
+                err = true;
+                return;
+            }
+            if(!(m.imgSource?true:false) || m.imgSource == ''){
+                setJsonErrorMsg('imgSource property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.rating?true:false) || m.rating == ''){
+                setJsonErrorMsg('rating property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.title?true:false) || m.title == ''){
+                setJsonErrorMsg('title property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            if(!(m.year?true:false) || m.year == ''){
+                setJsonErrorMsg('year property invalid or null, element index: '+index);
+                err = true;
+                return;
+            }
+            
+        })
+        if(!err){
+            setJsonErrorMsg('');
+            //fetch
+            moviesList.forEach(async (m) => await addMovie(m));
+        }
+        return;
+    }
+
+    const placeholderText = 
+        "[\n"+
+        "\t\"title\""+":" +"\"sample title...\""+",\n"+
+        "\t\"year\""+":"+"\"1970...\""+",\n"+
+        "\t\"genre\""+":"+ "\"genre name...\""+",\n"+
+        "\t\"rating\""+":"+ "\"8.4...\""+",\n"+
+        "\t\"imgSource\""+":"+ "\"link to img source...\""+",\n"+
+        "\t\"description\""+":"+ "\"sample description...\""+",\n"+
+        "\t\"director\""+":"+ "\"director name\""+",\n"+
+        "\t\"actors\""+":"+ "\"[ 'actor_name1', 'actor_name2', ... ]\"\n"+
+        "]\n"+","+
+        ".\n"+
+        ".\n"+
+        ".\n";
 
     return(
         <>
-            <h3>Add movie</h3> 
-            <div className="input-div">
-                <label htmlFor='movie-title-input'>Movie title:</label>
-                <input className='movie-title-input'/>
-                <button>Add title</button>
-            </div>
-            <div className="input-div">
-                <label htmlFor='year-input'>Movie year:</label>
-                <input className='year-input'/>
-                <button>Add year</button>
-            </div>
-            <div className="input-div">
-                <label htmlFor='rating-input'>Movie rating:</label>
-                <input className='rating-input'/>
-                <button>Add rating</button>
-            </div>
-            <div className="input-div">
-                <label htmlFor='img-input'>Movie image source:</label>
-                <input className='img-input'/>
-                <button>Add image</button>
-            </div>
-            <div className="input-div">
-                <label htmlFor='description-input'>Movie description:</label>
-                <textarea className='description-input'/>
-                <button>Add description</button>
-            </div>
-            <div className="input-div">
-                <label htmlFor='movie-director-input'>Movie director:</label>
-                <input className='movie-director-input'/>
-                <button>Add director</button>
-            </div>
-            <div>
-                <div className="input-div">
-                    <label htmlFor='movie-actors-input'>Movie actors:</label>
-                    <input className='movie-actors-input'/>
-                    <button>Add actor</button>
-                </div>
-            </div>
-
-            <div className='separator-div'></div>
-
-            <div className='show-movie-div'>
-                <div className='image-rating-div'>
-                    <img className='movie-img' src={imgSrc}/>
-                </div>
-            </div>
-
+            <h3>Insert movies in JSON format</h3>
+            <textarea ref={textRef} className="json-input" placeholder={placeholderText}></textarea>
+            <div className='jsonError'>{jsonErrorMsg}</div>
+            <button onClick={() => {textRef.current? addMovies(textRef.current.value):setJsonErrorMsg('input element undefined')}}>Add movies</button>
         </>
     );
 }

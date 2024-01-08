@@ -5,6 +5,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 
 
@@ -16,20 +17,27 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '7946138520'));
-const session = driver.session();
+
 
 app.get('/', async (req,res) => {
     //const result = await session.run('CREATE (a:Person {name: "proba"}) RETURN a');
     //console.log(result.records[0]);
 })
 
+
 app.post('/register/:username/:email/:password', async (req, res) =>{
     const username = req.params.username;
     const email = req.params.email;
     const password = req.params.password;
     var passwordHash;
+
+    const session = driver.session();
 
     await bcrypt.genSalt(10).then(salt => {
         return bcrypt.hash(password, salt);
@@ -42,7 +50,7 @@ app.post('/register/:username/:email/:password', async (req, res) =>{
 
 
     const result = await session.run(`match (u:User {email: '${email}'}) return u;`);
-    
+    session.close();
     if(result.records.length === 0){
         console.log(result.records.length);
         const createResult = await session.run(`create (u:User {username: '${username}', email: '${email}', password: '${passwordHash}'}) return u;`);
@@ -58,9 +66,10 @@ app.post('/register/:username/:email/:password', async (req, res) =>{
 app.get('/login/:email/:password', async (req,res) => {
     const email = req.params.email;
     const password = req.params.password;
+    const session = driver.session();
 
     const result = await session.run(`match (u:User {email: '${email}'}) return u;`);
-
+    session.close();
     if(result.records.length === 0){
         res.status(404).send({message: "Email not found"});
         return;
@@ -92,11 +101,71 @@ app.get('/login/:email/:password', async (req,res) => {
     
 // })
 
+app.post("/addMovie", verifyToken, async (req,res)=>{
+    console.log(req.body);
+
+    // merge (d:director {name: "Masaki Kobayashi"}) merge (a1:actor {name:"Toshiro Mifune"}) merge (a2:actor {name:"Yoko Tsukasa"}) merge (a3:actor {name:"Go Kato"}) merge (d)-[:directed]->(m)-[:directed_by]->(d) merge (a1)-[:acted_in]->(m)-[:has_actor]->(a1) merge (a2)-[:acted_in]->(m)-[:has_actor]->(a2) merge (a3)-[:acted_in]->(m)-[:has_actor]->(a3) return m,d,a1,a2,a3;
+    var title, year, genre, rating, imgSource, description, director, actors;
+    var actorsList;
+
+    if( req.body.title && req.body.title != '' &&
+        req.body.year && req.body.year != '' &&
+        req.body.genre && req.body.genre != '' &&
+        req.body.rating && req.body.rating != '' &&
+        req.body.imgSource && req.body.imgSource != '' &&
+        req.body.description && req.body.description != '' &&
+        req.body.director && req.body.director != '' &&
+        req.body.actors && req.body.actors != ''){ 
+
+            actors = req.body.actors.replaceAll("'","\"");
+            actors[0] = "'";
+            actors[actors.length] = "'";
+
+            actorsList = JSON.parse(actors);
+
+            title = req.body.title;
+            year = req.body.year;
+            genre = req.body.genre;
+            rating = req.body.rating;
+            imgSource = req.body.imgSource;
+            description = req.body.description;
+            director = req.body.director;
+
+        }
+    
+        const session = driver.session();
+        //proveri da li postoji film sa ovim imenom
+    const matchResult = await session.run(`match (m:Movie {title: '${title}'}) return m;`);
+    if(matchResult.records.length !== 0){
+        res.status(409).send({message: "Movie with that title already exists"});
+        return;
+    }
+
+    let query = `merge (m:Movie {title: "${title}", year: "${year}", genre: "${genre}", rating: "${rating}", imgSource: "${imgSource}", description: "${description}"}) 
+                 merge (d:Director {name: "${director}"}) 
+                 merge (d)-[:DIRECTED]->(m)-[:DIRECTED_BY]->(d)`;
+    
+    actorsList.forEach((a, index) => {
+        query += ` merge (a${index}:actor {name: "${a}"}) 
+                  merge (a${index})-[:ACTED_IN]->(m)-[:HAS_ACTOR]->(a${index})`
+    })
+    query += "return m;";
+    
+    const addResult = await session.run(query);
+    session.close();
+    if(addResult.records.length !== 0){
+        const resTitle = addResult.records[0].get(0).properties.title;
+        res.status(200).send({message: `Movie ${resTitle} added`});
+        return;
+    }
+
+    res.status(400).send({message:'error while adding movie'});
+})
+
 
 function verifyToken(req, res, next) {
 
     const token = req.cookies['jwt'];
-
     if (!token) return res.status(401).send({ error: 'Access denied' });
     try {
         const decoded = jwt.verify(token, 'secret-key');

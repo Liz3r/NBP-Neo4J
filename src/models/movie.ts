@@ -1,11 +1,11 @@
 export interface movie{
     title: string,
-    year: number,
+    year: string,
     genre: string,
-    rating: number,
+    rating: string,
     imgSource: string,
     description: string,
 
     director: string,
-    cast: Array<string>
+    actors: Array<string>
 }
