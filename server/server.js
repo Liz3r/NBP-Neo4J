@@ -80,9 +80,7 @@ app.get('/login/:email/:password', async (req,res) => {
 
     bcrypt.compare(password, props.password, (err, result) =>{
         if(result === true){
-            const token = jwt.sign({userId: userId}, 'secret-key', {
-                expiresIn: '1h'
-            })
+            const token = jwt.sign({userId: userId}, 'secret-key');
             res.cookie('jwt',token);
             res.status(200).send({username: props.username, email: props.email});
         }else{
@@ -100,6 +98,22 @@ app.get('/login/:email/:password', async (req,res) => {
 //     console.log(result.records[0].get(0));
     
 // })
+
+app.get("/getMoviesBySearch/:search", verifyToken, (req,res)=>{
+    
+})
+
+app.get("/getMoviesByActor/:actor", verifyToken, (req,res)=>{
+
+})
+
+app.get("/getMoviesByDirector/:director", verifyToken, (req,res)=>{
+
+})
+
+app.get("/getRecommendedMovies", verifyToken, (req,res) => {
+
+})
 
 app.post("/addMovie", verifyToken, async (req,res)=>{
     console.log(req.body);

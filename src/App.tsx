@@ -21,7 +21,7 @@ function App() {
     if(getCookie("jwt") != null){
       setIsLoggedIn(true);
     }
-    console.log(getCookie("jwt"));
+    //console.log(getCookie("jwt"));
   },[])
 
   return (

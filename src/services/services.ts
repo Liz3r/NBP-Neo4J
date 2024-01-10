@@ -4,7 +4,6 @@ import { movie } from "../models/movie";
 
 export function registerUser(username: string | undefined, email: string | undefined, password: string | undefined):Promise<Response>{
 
-
     return fetch(`${URL}/register/${username}/${email}/${password}`, {
         method: 'POST',
         credentials: 'include'
@@ -14,7 +13,6 @@ export function registerUser(username: string | undefined, email: string | undef
 
 export function loginUser( email: string | undefined, password: string | undefined):Promise<Response>{
 
-
     return fetch(`${URL}/login/${email}/${password}`, {
         method: 'GET',
         credentials: 'include'
@@ -22,12 +20,9 @@ export function loginUser( email: string | undefined, password: string | undefin
         
 }
 
-interface body{
-    str: string
-}
 export function addMovie(movieObj: movie){
 
-    console.log(movieObj);
+    //console.log(movieObj);
     return fetch(`${URL}/addMovie`, {
         headers: {
             'Accept': 'application/json',
@@ -36,5 +31,23 @@ export function addMovie(movieObj: movie){
         method: 'POST',
         credentials: 'include',
         body:  JSON.stringify(movieObj)
-    }).then();
+    });/*.then(res=>{
+        if(res.status == 200){
+            return 
+        }
+    });*/
+}
+
+export function searchMovies(input: string){
+
+    return fetch(`http://localhost:3001/getMoviesBySearch/${input}`, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(res=>{
+        if(res.ok){
+            return res.json();
+        }
+    }).then(data=>{
+        console.log(data);
+    })
 }

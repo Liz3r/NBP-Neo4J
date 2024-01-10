@@ -1,11 +1,12 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Main.css';
-import React, { useState } from "react";
-import Movies from "../Movies/Movies";
+import React, { useRef, useState } from "react";
 import MovieDetailsDialog from "../MovieDetailsDialog/MovieDetailsDialog";
 import AddMovieDialog from "../AddMovieDialog/AddMovieDialog";
 import { movie } from "../../models/movie";
+import { searchMovies } from "../../services/services";
+import Movie from "../Movies/Movie";
 
 
 
@@ -16,6 +17,17 @@ function Main(){
 
     const [ addMovieDialogActive, setAddMovieDialogActive ] = useState<boolean>(false);
     const [ movieDetails, setMovieDetails ] = useState<null | movie>(null);
+    const [ moviesList, setMoviesList ] = useState<Array<movie>>([]);
+
+    const searchInputRef = useRef<HTMLInputElement>(null);
+
+    function search(input: string | undefined){
+
+        if(input){
+            searchMovies(input);
+        }
+
+    }
 
     return(
     <>
@@ -31,15 +43,15 @@ function Main(){
         <div className='search-div'>
             <button className="add-movie-btn" onClick={()=>setAddMovieDialogActive(true)}>Add movie</button>
             <div className='search-input-div'>
-                <input placeholder='Search' className='search-input'></input>
-                <button>
+                <input placeholder='Search' className='search-input' ref={searchInputRef}></input>
+                <button onClick={() => {search(searchInputRef.current?.value)}}>
                     <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                 </button>
             </div>
         </div>
 
         <div className='movies-div'>
-            <Movies movieDetails={movieDetails} setMovieDetails={setMovieDetails}/>
+            {moviesList.map(m => <Movie movie={m}/>)}
          </div>
     </>
     );
