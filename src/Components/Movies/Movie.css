@@ -1,4 +1,44 @@
-.single-movie{
-    width: fit-content;
-    height: fit-content;
+.single-movie-div{
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    max-width: 200px;
+    max-height: 450px;
+}
+
+.rating-div{
+    
+    display: flex;
+    flex-direction: row;
+    max-height: fit-content;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    
+}
+
+img{
+    width: 200px;
+    height: 420;
+}
+
+.movie-title, .rating-text{
+    color: white;
+}
+
+.genre-text{
+    color: rgb(128, 126, 126);
+}
+
+.genre-text,.rating-text{
+    margin: 5px;
+}
+
+.movie-title{
+    margin: 10px;
+}
+
+.star-icon{
+    color: gold;
 }

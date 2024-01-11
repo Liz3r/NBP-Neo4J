@@ -9,9 +9,6 @@ import { searchMovies } from "../../services/services";
 import Movie from "../Movies/Movie";
 
 
-
-
-
 function Main(){
 
 
@@ -51,7 +48,7 @@ function Main(){
             <button className="add-movie-btn" onClick={()=>setAddMovieDialogActive(true)}>Add movie</button>
             <div className='search-input-div'>
                 <input placeholder='Search' className='search-input' ref={searchInputRef}></input>
-                <button onClick={() => {search(searchInputRef.current?.value)}}>
+                <button className="search-btn" onClick={() => {search(searchInputRef.current?.value)}}>
                     <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                 </button>
             </div>

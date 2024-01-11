@@ -11,10 +11,12 @@ function Movies({ movie }: { movie:movie}){
         <>
             <div className="single-movie-div">
                 <img src={movie.imgSource} alt={movie.title} className="movie-img"/>
-                <h4 className="movie-name">{movie.title + " (" + movie.year + ")"}</h4>
+                <h4 className="movie-title">{movie.title + " (" + movie.year + ")"}</h4>
+                    
+                        <p className="genre-text">{movie.genre}</p>
                     <div className="rating-div">
-                        <FontAwesomeIcon icon={faStar}/>
-                        <p>{movie.rating + "/10"}</p>
+                        <FontAwesomeIcon className="star-icon"icon={faStar}/>
+                        <p className="rating-text">{movie.rating + "/10"}</p>
                     </div>
             </div>
             
