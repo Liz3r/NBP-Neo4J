@@ -99,7 +99,31 @@ app.get('/login/:email/:password', async (req,res) => {
     
 // })
 
-app.get("/getMoviesBySearch/:search", verifyToken, (req,res)=>{
+app.get("/getMoviesBySearch/:search", verifyToken, async (req,res)=>{
+    const search = req.params.search;
+
+    const session = driver.session();
+    const query = `match (m:Movie) where toLower(m.title) contains toLower('${search}') return m;`;
+
+    const result = await session.run(query);
+
+    var moviesList = [];
+    result.records.forEach(record => {
+        const movie = {
+            title: record.get(0).properties.title,
+            year: record.get(0).properties.year,
+            genre: record.get(0).properties.genre,
+            rating: record.get(0).properties.rating,
+            imgSource: record.get(0).properties.imgSource
+        }
+        moviesList.push(movie);
+    });
+
+    res.status(200).send(moviesList);
+
+})
+
+app.get("/getMovieDetails/:title", verifyToken, (req,res)=>{
     
 })
 

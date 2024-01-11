@@ -48,6 +48,6 @@ export function searchMovies(input: string){
             return res.json();
         }
     }).then(data=>{
-        console.log(data);
+        return data;
     })
 }

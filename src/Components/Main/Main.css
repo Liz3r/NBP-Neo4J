@@ -9,11 +9,17 @@
 }
 
 .movies-div{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
     background-color: white;
     width: 80vw;
     height: 92%;
     margin-top: 5px;
     margin: 5px auto;
+    padding-top: 20px;
+    gap: 20px;
 }
 
 .dialog-box-div{

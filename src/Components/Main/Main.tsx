@@ -17,14 +17,21 @@ function Main(){
 
     const [ addMovieDialogActive, setAddMovieDialogActive ] = useState<boolean>(false);
     const [ movieDetails, setMovieDetails ] = useState<null | movie>(null);
-    const [ moviesList, setMoviesList ] = useState<Array<movie>>([]);
+    const [ moviesList, setMoviesList ] = useState<Array<movie> | null>(null);
 
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     function search(input: string | undefined){
 
         if(input){
-            searchMovies(input);
+            const movies: Array<movie> = [];
+            searchMovies(input).then(data=>{
+                data.forEach((m: movie) => {
+                    movies.push(m);
+                });
+
+                setMoviesList(movies);
+            });
         }
 
     }
@@ -51,7 +58,7 @@ function Main(){
         </div>
 
         <div className='movies-div'>
-            {moviesList.map(m => <Movie movie={m}/>)}
+            {moviesList?.map((m,index) => <Movie movie={m} key={m.title}/>)}
          </div>
     </>
     );
