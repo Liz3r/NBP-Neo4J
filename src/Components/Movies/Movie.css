@@ -2,8 +2,16 @@
     display: flex;
     justify-content: start;
     flex-direction: column;
-    max-width: 200px;
-    max-height: 450px;
+    max-width: 230px;
+    max-height: 480px;
+    background-color: #161616;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 5px 3px 3px rgb(10, 10, 10);
+}
+
+.single-movie-div:hover{
+    background-color: #181818;
 }
 
 .rating-div{
@@ -14,8 +22,29 @@
     flex-wrap: nowrap;
     align-items: center;
     gap: 10px;
-    margin-top: auto;
+    margin-bottom: 10px;
     
+}
+
+.details-btn{
+    background-color: rgb(224, 191, 0);
+    border: 1px solid black;
+    color: black;
+    height: 30px;
+    font-weight: 900;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+}
+
+.details-btn:hover{
+    background-color: gold;
+
+}
+
+.secondary-items{
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
 }
 
 img{
@@ -37,8 +66,11 @@ img{
 
 .movie-title{
     margin: 10px;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .star-icon{
-    color: gold;
+    color: rgb(221, 188, 0);
 }

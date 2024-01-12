@@ -99,6 +99,66 @@ app.get('/login/:email/:password', async (req,res) => {
     
 // })
 
+app.get("/getMovieDetails/:id", verifyToken, async (req,res) =>{
+    const movieId = req.params.id;
+    const userId = req.userId;
+
+    //return data
+    var ratingRelationExists;
+    var rating;
+
+    const session = driver.session();
+
+    //match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' return m,u;
+    const userExistsResult = await session.run(`return exists{match (u:User) where elementId(u)="${userId}"};`);
+    if(userExistsResult.records){
+        res.status(500).send({message: 'Server error'});
+        return;
+    }
+    const userExists = userExistsResult.records[0].get(0);
+    if(!userExists){
+        res.status(404).send({message: 'User not found'});
+        return;
+    }
+
+    const movieExistsResult = await session.run(`return exists{match (m:Movie) where elementId(m)="${movieId}"};`);
+    if(movieExistsResult.records){
+        res.status(500).send({message: 'Server error'});
+        return;
+    }
+    const movieExists = movieExistsResult.records[0].get(0);
+    if(!movieExists){
+        res.status(404).send({message: 'Movie not found'});
+        return;
+    }
+
+    const relationTypeExistsResult = await session.run(`return exists{ ()-[r:RATED]->()};`);
+    
+    if(relationTypeExistsResult.records){
+        res.status(500).send({message: 'Server error'});
+        return;
+    }
+    const relationTypeExists = relationTypeExistsResult.records[0].get(0);
+    if(!relationTypeExists){
+        ratingRelationExists = false;
+    }else{
+        const relatonResult = await session.run(`
+        match (m:Movie) where elementId(m)='${movieId}' 
+        match (u:User) where elementId(u)='${userId}' 
+        optional match (u)-[r:RATED]->(m) return r;`);
+
+        //const relation = relatonExistsResult.records[0].get(0);
+    }
+
+
+
+
+    //const userRatedMovieRelationExistsResult = await session.run(`match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' return exists((u)-[:Rated]->(m));`);
+    //dodaje novi rating: match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' merge (u)-[r:Rated {rating: ...}]->(m) return u,r,m;
+
+    session.close();
+})
+
 app.get("/getMoviesBySearch/:search", verifyToken, async (req,res)=>{
     const search = req.params.search;
 
@@ -106,10 +166,12 @@ app.get("/getMoviesBySearch/:search", verifyToken, async (req,res)=>{
     const query = `match (m:Movie) where toLower(m.title) contains toLower('${search}') return m;`;
 
     const result = await session.run(query);
+    session.close();
 
     var moviesList = [];
     result.records.forEach(record => {
         const movie = {
+            id: result.records[0].get(0).elementId,
             title: record.get(0).properties.title,
             year: record.get(0).properties.year,
             genre: record.get(0).properties.genre,

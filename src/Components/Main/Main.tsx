@@ -55,7 +55,7 @@ function Main(){
         </div>
 
         <div className='movies-div'>
-            {moviesList?.map((m,index) => <Movie movie={m} key={m.title}/>)}
+            {moviesList?.map((m,index) => <Movie movie={m} setMovieDetails={(m)=>{setMovieDetails(m)}} key={m.title}/>)}
          </div>
     </>
     );

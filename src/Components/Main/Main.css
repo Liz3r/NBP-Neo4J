@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
     height: 8%;
+    width: 100vw;
     box-shadow: 0px 2px 5px black;
     background-color: rgb(20, 20, 20);;
 }
@@ -20,7 +21,7 @@
     margin-top: 5px;
     margin: 5px auto;
     padding-top: 20px;
-    gap: 20px;
+    gap: 15px;
 }
 
 .dialog-box-div{
@@ -45,13 +46,15 @@
 
 .search-input{
     width: 25vw;
-    height: 30px;
+    height: 31px;
     background: rgb(48, 48, 48);
     border: 1px solid black;
     border-radius: 8px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
     text-align: center;
+    color: wheat;
+    margin-right: 2px;
 }
 
 
@@ -62,15 +65,17 @@
 }
 
 .search-input:focus{
-    outline-color: gold;
+    outline: none !important;
+    border: 2px solid rgb(228, 194, 0);
+    margin-right: 0px;
 }
 
 .search-btn{
-    background-color: gold;
+    background-color: #ecc900;
     color: black;
     border: none;
     width: 50px;
-    height: 34px;
+    height: 35px;
     font-size: large;
     border-radius: 8px;
     border-top-left-radius: 0px;
@@ -81,16 +86,14 @@
     border-left: none;
 }
 .search-btn:hover{
-    background-color: rgb(216, 184, 0);
-}
-.search-btn:active{
-    background-color: rgb(184, 156, 0);
+    background-color: gold;
 }
 
 .search-input-div{
     display: flex;
     justify-content: center;
-    height: 30px;
+    align-items: center;
+    height: 31px;
 }
 
 .add-movie-btn{
@@ -98,7 +101,7 @@
     left: 25px;
     width: 100px;
     height: 25px;
-    background-color: gold;
+    background-color: #ecc900;
     color: black;
     border: none;
     border-radius: 5px;
@@ -106,4 +109,8 @@
     font-weight: 700;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 
+}
+
+.add-movie-btn:hover{
+    background-color: gold;
 }

@@ -40,14 +40,28 @@ export function addMovie(movieObj: movie){
 
 export function searchMovies(input: string){
 
-    return fetch(`http://localhost:3001/getMoviesBySearch/${input}`, {
+    return fetch(`${URL}/getMoviesBySearch/${input}`, {
         method: 'GET',
         credentials: 'include'
-    }).then(res=>{
+    }).then(async res=>{
         if(res.ok){
             return res.json();
+        }else{
+            const err = await res.json();
+            console.log(`Error ${res.status}: ${err.message}`);
         }
     }).then(data=>{
         return data;
+    })
+}
+
+export function getMovieDetails(id: string){
+    return fetch(`${URL}/getMovieDetails/${id}`, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(res => {
+        if(res.ok){
+            return res.json();
+        }
     })
 }
