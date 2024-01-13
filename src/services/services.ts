@@ -46,13 +46,8 @@ export function searchMovies(input: string){
     }).then(async res=>{
         if(res.ok){
             return res.json();
-        }else{
-            const err = await res.json();
-            console.log(`Error ${res.status}: ${err.message}`);
         }
-    }).then(data=>{
-        return data;
-    })
+    });
 }
 
 export function getMovieDetails(id: string){

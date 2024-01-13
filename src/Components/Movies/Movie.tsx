@@ -6,12 +6,30 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { getMovieDetails } from "../../services/services";
 
 
-function Movies({ movie, setMovieDetails }: { movie:movie, setMovieDetails: (b:movie) => void}){
+function Movies({ movie, setMovieDetails }: { movie:movie, setMovieDetails: (md: null | {movie: movie, userRated: boolean, userRating: number}) => void}){
     
     function showDetails(id: string){
-        getMovieDetails(id).then(res=>{
-            if(res.status === 200){
-                return res.json();
+        
+        getMovieDetails(id).then((data:{movie: movie, userRated: boolean, userRating: number})=>{
+            // console.log(('id' in data.movie),
+            // ('title' in data.movie),
+            // ('year' in data.movie),
+            // ('genre' in data.movie),
+            // ('rating' in data.movie),
+            // ('imgSource' in data.movie),
+            // ('description' in data.movie),
+            // ('userRated' in data));
+
+            if(('id' in data.movie) && data.movie.id !== '' &&
+            ('title' in data.movie) && data.movie.title !== '' &&
+            ('year' in data.movie) && data.movie.year !== '' &&
+            ('genre' in data.movie) && data.movie.genre !== '' &&
+            ('rating' in data.movie) && data.movie.rating !== '' &&
+            ('imgSource' in data.movie) && data.movie.imgSource !== '' &&
+            ('description' in data.movie) && data.movie.description !== '' &&
+            ('userRated' in data))
+            {
+                setMovieDetails(data);
             }
         })
     }

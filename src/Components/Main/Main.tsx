@@ -13,7 +13,7 @@ function Main(){
 
 
     const [ addMovieDialogActive, setAddMovieDialogActive ] = useState<boolean>(false);
-    const [ movieDetails, setMovieDetails ] = useState<null | movie>(null);
+    const [ movieDetails, setMovieDetails ] = useState<null | {movie: movie, userRated: boolean, userRating: number}>(null);
     const [ moviesList, setMoviesList ] = useState<Array<movie> | null>(null);
 
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +24,9 @@ function Main(){
             const movies: Array<movie> = [];
             searchMovies(input).then(data=>{
                 data.forEach((m: movie) => {
+                    console.log(m.id);
                     movies.push(m);
+
                 });
 
                 setMoviesList(movies);
@@ -38,7 +40,13 @@ function Main(){
         {(addMovieDialogActive || movieDetails)?
         <div className="dialog-box-div">
             <div className="dialog-content">
-                {addMovieDialogActive? <AddMovieDialog/> : <MovieDetailsDialog/>}
+                {
+                addMovieDialogActive? 
+                <AddMovieDialog/> : 
+                movieDetails? 
+                <MovieDetailsDialog movieDetails={movieDetails} resetMovieDetails={()=>{setMovieDetails(null)}}/> 
+                : <></>
+                }
             </div>
         </div>
         :
@@ -55,7 +63,7 @@ function Main(){
         </div>
 
         <div className='movies-div'>
-            {moviesList?.map((m,index) => <Movie movie={m} setMovieDetails={(m)=>{setMovieDetails(m)}} key={m.title}/>)}
+            {moviesList?.map((m) => <Movie movie={m} setMovieDetails={(md: null | {movie: movie, userRated: boolean, userRating: number})=>{setMovieDetails(md)}} key={m.title}/>)}
          </div>
     </>
     );

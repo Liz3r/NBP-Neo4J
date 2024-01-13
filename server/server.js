@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
+const request = require('request');
 
 
 const app = express();
@@ -29,6 +29,11 @@ app.get('/', async (req,res) => {
     //const result = await session.run('CREATE (a:Person {name: "proba"}) RETURN a');
     //console.log(result.records[0]);
 })
+
+// app.get("/imdbFetch",async (req,res)=>{
+//     const data =  await request("https://www.omdbapi.com/?s=star+wars&apikey=key");
+//     console.log(data);
+// })
 
 
 app.post('/register/:username/:email/:password', async (req, res) =>{
@@ -111,33 +116,27 @@ app.get("/getMovieDetails/:id", verifyToken, async (req,res) =>{
 
     //match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' return m,u;
     const userExistsResult = await session.run(`return exists{match (u:User) where elementId(u)="${userId}"};`);
-    if(userExistsResult.records){
-        res.status(500).send({message: 'Server error'});
-        return;
-    }
+    
     const userExists = userExistsResult.records[0].get(0);
     if(!userExists){
         res.status(404).send({message: 'User not found'});
         return;
     }
 
-    const movieExistsResult = await session.run(`return exists{match (m:Movie) where elementId(m)="${movieId}"};`);
-    if(movieExistsResult.records){
-        res.status(500).send({message: 'Server error'});
-        return;
-    }
-    const movieExists = movieExistsResult.records[0].get(0);
-    if(!movieExists){
+    const movieResult = await session.run(`
+    optional match (m:Movie) where elementId(m)="${movieId}" 
+    optional match (m)-[:DIRECTED_BY]->(d:Director)
+    optional match (m)-[:HAS_ACTOR]->(a:Actor) return m,d.name,collect(a.name);`);
+
+    if(!movieResult.records[0].get(0) || !movieResult.records[0].get(1) || !movieResult.records[0].get(2)){
         res.status(404).send({message: 'Movie not found'});
         return;
     }
 
+    //sastavljanje movie objekta
+    const movie = {...movieResult.records[0].get(0).properties, id: movieResult.records[0].get(0).elementId, director: movieResult.records[0].get(1), actors: movieResult.records[0].get(2)};
+
     const relationTypeExistsResult = await session.run(`return exists{ ()-[r:RATED]->()};`);
-    
-    if(relationTypeExistsResult.records){
-        res.status(500).send({message: 'Server error'});
-        return;
-    }
     const relationTypeExists = relationTypeExistsResult.records[0].get(0);
     if(!relationTypeExists){
         ratingRelationExists = false;
@@ -147,11 +146,19 @@ app.get("/getMovieDetails/:id", verifyToken, async (req,res) =>{
         match (u:User) where elementId(u)='${userId}' 
         optional match (u)-[r:RATED]->(m) return r;`);
 
-        //const relation = relatonExistsResult.records[0].get(0);
+        const relation = relatonResult.records[0].get(0);
+        if(!relation){
+            ratingRelationExists = false;
+            rating = 0;
+        }else{
+            ratingRelationExists = true;
+            rating = relation.properties.rating;
+        }
+        
     }
 
-
-
+    //vraca se movie details objekat (movie objekat + info o rejtingu korisnika)
+    res.status(200).send({movie: movie, userRated: ratingRelationExists, userRating: rating});
 
     //const userRatedMovieRelationExistsResult = await session.run(`match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' return exists((u)-[:Rated]->(m));`);
     //dodaje novi rating: match (m:Movie) where elementId(m)='${movieId}' match (u:User) where elementId(u)='${userId}' merge (u)-[r:Rated {rating: ...}]->(m) return u,r,m;
@@ -171,7 +178,7 @@ app.get("/getMoviesBySearch/:search", verifyToken, async (req,res)=>{
     var moviesList = [];
     result.records.forEach(record => {
         const movie = {
-            id: result.records[0].get(0).elementId,
+            id: record.get(0).elementId,
             title: record.get(0).properties.title,
             year: record.get(0).properties.year,
             genre: record.get(0).properties.genre,
@@ -246,7 +253,7 @@ app.post("/addMovie", verifyToken, async (req,res)=>{
                  merge (d)-[:DIRECTED]->(m)-[:DIRECTED_BY]->(d)`;
     
     actorsList.forEach((a, index) => {
-        query += ` merge (a${index}:actor {name: "${a}"}) 
+        query += ` merge (a${index}:Actor {name: "${a}"}) 
                   merge (a${index})-[:ACTED_IN]->(m)-[:HAS_ACTOR]->(a${index})`
     })
     query += "return m;";
