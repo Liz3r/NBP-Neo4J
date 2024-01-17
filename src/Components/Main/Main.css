@@ -36,12 +36,14 @@
 }
 
 .dialog-content{
-    width: 50vw;
-    height: 50vh;
+    width: 65vw;
+    height: 65vh;
     border-radius: 25px;
-    background-color: white;
+    padding: 30px;
     border: none;
-    
+    background-color: #161616;
+    box-shadow: 8px 5px 5px rgb(10, 10, 10);
+    color: white;
 }
 
 .search-input{

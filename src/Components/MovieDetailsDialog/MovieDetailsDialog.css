@@ -1,0 +1,158 @@
+.details-div{
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.img-rating-div{
+    display: flex;
+    flex-direction: column;
+}
+
+/* .title-desc-cast-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+} */
+
+.movie-details-img{
+    width: 260px;
+    height: 390px;
+    border: 5px solid white;
+}
+
+.cancel-button{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 0px;
+    border-radius: 100%;
+}
+
+.cancel-button::before, .cancel-button::after{
+    position: absolute;
+    display: inline-block;
+    left: 15%;
+    top: 48%;
+    content: ' ';
+    width: 70%;
+    height: 3px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 5px;
+}
+.cancel-button:hover{
+    background-color: rgb(43, 43, 43);
+    cursor: pointer;
+}
+.cancel-button::before{
+    transform: rotate(45deg);
+}
+.cancel-button::after{
+    transform: rotate(-45deg);
+}
+
+
+.title-desc-cast-div{
+    position: relative;
+}
+
+.details-title, .details-year, .details-genre, .details-desc{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.details-year, .details-genre, .details-desc{
+    color: rgb(177, 177, 177);
+}
+
+.details-desc{
+    margin-top: 30px;
+}
+
+.actors-div, .director-div{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 20px;
+    margin-top: 30px;
+    
+}
+
+.rate-movie-btn{
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: auto;
+}
+
+.user-rating-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 150px;
+}
+
+/*rating stars*/
+.rating-stars{
+    direction: rtl;
+    position: absolute;
+    unicode-bidi: bidi-override;
+}
+
+.r-star:hover, .r-star:hover ~ .r-star{
+    color: blue;
+}
+
+
+/*--------------------------*/
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+.rate {
+    display: inline-block;
+    border: 0;
+}
+/* Hide radio */
+.rate > input {
+    display: none;
+}
+/* Order correctly by floating highest to the right */
+.rate > label {
+    float: right;
+}
+/* The star of the show */
+.rate > label:before {
+    display: inline-block;
+    font-size: 1.1rem;
+    padding: .3rem .2rem;
+    margin: 0;
+    cursor: pointer;
+    font-family: FontAwesome;
+    content: "\f005"; /* full star */
+}
+/* Zero stars rating */
+.rate > label:last-child:before {
+    content: "\f006"; /* empty star outline */
+}
+/* Half star trick */
+.rate .half:before {
+    content: "\f089 "; /* half star no outline */
+    position: absolute;
+    padding-right: 0;
+}
+/* Click + hover color */
+input:checked ~ label, /* color current and previous stars on checked */
+label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
+
+/* Hover highlights */
+input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
+input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
+label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  }
+
+.rate > label{
+    
+}
