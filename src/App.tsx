@@ -19,9 +19,11 @@ function App() {
 
   useEffect(()=>{
     if(getCookie("jwt") != null){
+      const username = getCookie("username");
+      setLoggedUsername(username? username:'');
       setIsLoggedIn(true);
+
     }
-    //console.log(getCookie("jwt"));
   },[])
 
   return (

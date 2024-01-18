@@ -36,12 +36,18 @@ function LoginSignup({props}:any){
             loginUser(email,password).then(res=>{
                 if(res.status === 200){
                     return res.json();
+                }else{
+                    console.log('Invalid username/password');
+                    return;
                 }
                 
             }).then(data=>{
-                console.log(data);
-                setIsLoggedIn(true);
-                setLoggedUsername(data.username);
+                if(data){
+                    console.log(data);
+                    document.cookie = `username=${data.username};`;
+                    setIsLoggedIn(true);
+                    setLoggedUsername(data.username);
+                }
             }).catch(err => {
                 console.log(err);
             });

@@ -5,8 +5,9 @@ import React, { useRef, useState } from "react";
 import MovieDetailsDialog from "../MovieDetailsDialog/MovieDetailsDialog";
 import AddMovieDialog from "../AddMovieDialog/AddMovieDialog";
 import { movie } from "../../models/movie";
-import { searchMovies } from "../../services/services";
+import { getMoviesByDirector, getMoviesWithActor, searchMovies } from "../../services/services";
 import Movie from "../Movies/Movie";
+import useScrollBlock from "../../scrollBlock";
 
 
 function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsername: string, resetLoggedUsername: ()=>void, setIsLoggedIn: (logged:boolean) => void}){
@@ -16,27 +17,58 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
     const [ movieDetails, setMovieDetails ] = useState<null | {movie: movie, userRated: boolean, userRating: number}>(null);
     const [ moviesList, setMoviesList ] = useState<Array<movie> | null>(null);
 
+    
+    const [blockScroll, allowScroll] = useScrollBlock();
+
     const searchInputRef = useRef<HTMLInputElement>(null);
 
     function search(input: string | undefined){
-
         if(input){
             const movies: Array<movie> = [];
             searchMovies(input).then(data=>{
                 data.forEach((m: movie) => {
-                    //console.log(m.id);
                     movies.push(m);
-
                 });
-
                 setMoviesList(movies);
             });
         }
-
     }
+
+    function getDirectedBy(director: string | undefined){
+        if(director){
+            const movies: Array<movie> = [];
+            getMoviesByDirector(director)?.then(data=>{
+                if(data)
+                data.forEach((m: movie) => {
+                    movies.push(m);
+                });
+                allowScroll();
+                setMovieDetails(null);
+                setMoviesList(movies);
+            });
+        }
+    }
+
+    function getWithActor(director: string | undefined){
+        if(director){
+            const movies: Array<movie> = [];
+            getMoviesWithActor(director)?.then(data=>{
+                if(data)
+                data.forEach((m: movie) => {
+                    movies.push(m);
+                });
+                allowScroll();
+                setMovieDetails(null);
+                setMoviesList(movies);
+            });
+        }
+    }
+    
 
     function logout(){
         //fetch
+        document.cookie = `jwt=;username=;expires=${new Date(0).toUTCString()}; path=/;`;
+        document.cookie = `username=;expires=${new Date(0).toUTCString()}; path=/;`;
         setIsLoggedIn(false);
         resetLoggedUsername();
     }
@@ -48,9 +80,12 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
             <div className="dialog-content">
                 {
                 addMovieDialogActive? 
-                <AddMovieDialog resetAddMoviesDialog={() => setAddMovieDialogActive(false)}/> : 
+                <AddMovieDialog resetAddMoviesDialog={() => {allowScroll();setAddMovieDialogActive(false)}}/> : 
                 movieDetails? 
-                <MovieDetailsDialog movieDetails={movieDetails} resetMovieDetails={()=>{setMovieDetails(null)}}/> 
+                <MovieDetailsDialog movieDetails={movieDetails} 
+                resetMovieDetails={()=>{allowScroll();setMovieDetails(null);}} 
+                getDirectedBy={(dir:string | undefined)=>getDirectedBy(dir)}
+                getWithActor={(act:string | undefined)=>getWithActor(act)}/> 
                 : <></>
                 }
             </div>
@@ -59,7 +94,7 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
         <></>
         }
         <div className='search-div'>
-            <button className="add-movie-btn" onClick={()=>setAddMovieDialogActive(true)}>Add movie</button>
+            <button className="add-movie-btn" onClick={()=>{blockScroll();setAddMovieDialogActive(true);}}>Add movie</button>
             <div className='search-input-div'>
                 <input placeholder='Search' className='search-input' ref={searchInputRef}></input>
                 <button className="search-btn" onClick={() => {search(searchInputRef.current?.value)}}>
@@ -74,7 +109,7 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
         </div>
 
         <div className='movies-div'>
-            {moviesList?.map((m) => <Movie movie={m} setMovieDetails={(md: null | {movie: movie, userRated: boolean, userRating: number})=>{setMovieDetails(md)}} key={m.title}/>)}
+            {moviesList?.map((m) => <Movie movie={m} setMovieDetails={(md: null | {movie: movie, userRated: boolean, userRating: number})=>{blockScroll();setMovieDetails(md);}} key={m.title}/>)}
          </div>
     </>
     );

@@ -7,9 +7,13 @@ import { rateMovie } from "../../services/services";
 
 
 function MovieDetailsDialog(
-    { movieDetails, resetMovieDetails }: 
-    { movieDetails: null | {movie: movie, userRated: boolean, userRating: number}, 
-    resetMovieDetails: () => void}){
+    { movieDetails, resetMovieDetails, getDirectedBy, getWithActor }: 
+    { 
+    movieDetails: null | {movie: movie, userRated: boolean, userRating: number}, 
+    resetMovieDetails: () => void,
+    getDirectedBy: (director: string | undefined) => void,
+    getWithActor: (actor: string | undefined) => void
+    }){
 
     const [ checked, setChecked ] = useState<number>(0);
 
@@ -39,7 +43,7 @@ function MovieDetailsDialog(
 
     return(
         <>
-                        <div className="cancel-button" onClick={resetMovieDetails}></div>
+            <div className="cancel-button" onClick={resetMovieDetails}></div>
             <div className="details-div">
                 <div className="img-rating-div">
                     <img className="movie-details-img" src={movieDetails?.movie.imgSource} alt={movieDetails?.movie.title}/>
@@ -52,11 +56,11 @@ function MovieDetailsDialog(
                     <p className="details-desc">{movieDetails?.movie.description}</p>
                     <div className="director-div">
                         <span>Directed by: </span>
-                        <div className="name-div">{movieDetails?.movie.director}</div>
+                        <div className="name-div" onClick={()=>getDirectedBy(movieDetails?.movie.director)}>{movieDetails?.movie.director}</div>
                     </div>
                     <div className="actors-div">
                         <span>Actors: </span>
-                        {movieDetails?.movie.actors.map((actorName, index) => <div className="name-div" key={index}>{actorName}</div>)}
+                        {movieDetails?.movie.actors.map((actorName, index) => <div className="name-div" key={index} onClick={()=>getWithActor(actorName)}>{actorName}</div>)}
                     </div>
                 </div>
             </div>

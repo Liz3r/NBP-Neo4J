@@ -25,17 +25,6 @@ app.use(bodyParser.json());
 const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '7946138520'));
 
 
-app.get('/', async (req,res) => {
-    //const result = await session.run('CREATE (a:Person {name: "proba"}) RETURN a');
-    //console.log(result.records[0]);
-})
-
-// app.get("/imdbFetch",async (req,res)=>{
-//     const data =  await request("https://www.omdbapi.com/?s=star+wars&apikey=key");
-//     console.log(data);
-// })
-
-
 app.post('/register/:username/:email/:password', async (req, res) =>{
     const username = req.params.username;
     const email = req.params.email;
@@ -96,13 +85,6 @@ app.get('/login/:email/:password', async (req,res) => {
 
 })
 
-// app.get('/proba', verifyToken, async (req,res)=>{
-
-//     const id = req.userId;
-//     const result = await session.run('match (u) where elementId(u)="'+id+'" return u;');
-//     console.log(result.records[0].get(0));
-    
-// })
 
 app.get("/getMovieDetails/:id", verifyToken, async (req,res) =>{
     const movieId = req.params.id;
@@ -197,12 +179,58 @@ app.get("/getMovieDetails/:title", verifyToken, (req,res)=>{
     
 })
 
-app.get("/getMoviesByActor/:actor", verifyToken, (req,res)=>{
+app.get("/getMoviesWithActor/:actor", verifyToken, async (req,res)=>{
 
+    const actor = req.params.actor;
+
+    const session = driver.session();
+    const result = await session.run(`match (a:Actor {name: '${actor}'}) match (m:Movie)-[:HAS_ACTOR]->(a) return m;`);
+
+    if(result.records[0].get(0) == undefined){
+        res.send(404).send({message: 'error: no movies found'});
+    }
+
+    var moviesList = [];
+    result.records.forEach(record => {
+        const movie = {
+            id: record.get(0).elementId,
+            title: record.get(0).properties.title,
+            year: record.get(0).properties.year,
+            genre: record.get(0).properties.genre,
+            rating: record.get(0).properties.rating,
+            imgSource: record.get(0).properties.imgSource
+        }
+        moviesList.push(movie);
+    });
+
+    res.status(200).send(moviesList);
 })
 
-app.get("/getMoviesByDirector/:director", verifyToken, (req,res)=>{
+app.get("/getMoviesByDirector/:director", verifyToken, async (req,res)=>{
+    
+    const director = req.params.director;
 
+    const session = driver.session();
+    const result = await session.run(`match (d:Director {name: '${director}'}) match (m:Movie)-[:DIRECTED_BY]->(d) return m;`);
+
+    if(result.records[0].get(0) == undefined){
+        res.send(404).send({message: 'error: no movies found'});
+    }
+
+    var moviesList = [];
+    result.records.forEach(record => {
+        const movie = {
+            id: record.get(0).elementId,
+            title: record.get(0).properties.title,
+            year: record.get(0).properties.year,
+            genre: record.get(0).properties.genre,
+            rating: record.get(0).properties.rating,
+            imgSource: record.get(0).properties.imgSource
+        }
+        moviesList.push(movie);
+    });
+
+    res.status(200).send(moviesList);
 })
 
 app.get("/getRecommendedMovies", verifyToken, (req,res) => {

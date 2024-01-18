@@ -22,7 +22,6 @@ export function loginUser( email: string | undefined, password: string | undefin
 
 export function addMovie(movieObj: movie){
 
-    //console.log(movieObj);
     return fetch(`${URL}/addMovie`, {
         headers: {
             'Accept': 'application/json',
@@ -31,11 +30,7 @@ export function addMovie(movieObj: movie){
         method: 'POST',
         credentials: 'include',
         body:  JSON.stringify(movieObj)
-    });/*.then(res=>{
-        if(res.status == 200){
-            return 
-        }
-    });*/
+    });
 }
 
 export function searchMovies(input: string){
@@ -71,8 +66,35 @@ export function rateMovie(id: string, rating: number){
                 return res.json();
             }
         })
+    }
+}
+
+export function getMoviesByDirector(director: string){
+    if(director != ''){
+        return fetch(`${URL}/getMoviesByDirector/${director}`, {
+            method: 'GET',
+            credentials: "include"
+        }).then(res=>{
+            if(res.ok){
+                return res.json();
+            }
+        });
     }else{
         return null;
     }
-    
+}
+
+export function getMoviesWithActor(actor: string){
+    if(actor != ''){
+        return fetch(`${URL}/getMoviesWithActor/${actor}`, {
+            method: 'GET',
+            credentials: "include"
+        }).then(res=>{
+            if(res.ok){
+                return res.json();
+            }
+        });
+    }else{
+        return null;
+    }
 }
