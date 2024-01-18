@@ -15,7 +15,7 @@ function getCookie(key: string) {
 function App() {
 
   const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-
+  const [ loggedUsername, setLoggedUsername] = useState('');
 
   useEffect(()=>{
     if(getCookie("jwt") != null){
@@ -26,7 +26,8 @@ function App() {
 
   return (
     <div className="App">
-      {!isLoggedIn? <LoginSignup props={{isLoggedIn: isLoggedIn, setIsLoggedIn: (isLogged:boolean)=>setIsLoggedIn(isLogged) }}/> : <Main/>}
+      {!isLoggedIn? <LoginSignup props={{setIsLoggedIn: (isLogged:boolean)=>setIsLoggedIn(isLogged), setLoggedUsername: (username:string)=>setLoggedUsername(username)}}/>
+       : <Main loggedUsername={loggedUsername} resetLoggedUsername={()=>setLoggedUsername('')} setIsLoggedIn={(logged:boolean)=>{setIsLoggedIn(logged)}}/>}
     </div>
   );
   

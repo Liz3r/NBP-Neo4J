@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { movie } from "../../models/movie";
 import './MovieDetailsDialog.css';
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { rateMovie } from "../../services/services";
 
 
@@ -11,14 +11,18 @@ function MovieDetailsDialog(
     { movieDetails: null | {movie: movie, userRated: boolean, userRating: number}, 
     resetMovieDetails: () => void}){
 
-    var selectedValue = 0;
+    const [ checked, setChecked ] = useState<number>(0);
+
+    useEffect(()=>{
+        setChecked(movieDetails?.userRated? (movieDetails.userRating*2) : 0);
+    },[])
 
     const numHalfStars = 20;
 
     function Rate(){
-
-        if(selectedValue % 0.5 !== 0 || selectedValue > 20 || selectedValue < 1){
-            selectedValue = 0;
+        const selectedValue = Number(checked)/2;
+        
+        if(((selectedValue % 0.5) !== 0) || selectedValue > 20 || selectedValue < 1){
             console.log('Postavljena vrednost nije validna');
             return;
         }
@@ -26,6 +30,7 @@ function MovieDetailsDialog(
         rateMovie(movieDetails? movieDetails?.movie.id: '', selectedValue)?.then(data=>{
             if(data){
                 console.log("Rating added");
+                resetMovieDetails();
             }else{
                 console.log("Error");
             }
@@ -60,7 +65,7 @@ function MovieDetailsDialog(
                 <fieldset className="rate">
                     {[...Array(numHalfStars)].map((el, index) => 
                     <React.Fragment key={index}> 
-                        <input type="radio" id={"rating"+index} name="rating" value={20-index} onChange={(e) => {selectedValue = Number(e.currentTarget.value)/2}}/>
+                        <input type="radio" id={"rating"+index} name="rating" value={20-index} checked={checked == (20-index)} onChange={(e) => {setChecked(Number(e.currentTarget.value))}}/>
                         <label className={(index%2==0)? '' : 'half'} htmlFor={"rating"+index}></label> 
                     </React.Fragment>)}
                 </fieldset>

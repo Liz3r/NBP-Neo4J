@@ -87,6 +87,7 @@
     padding: 0px;
     border: 1px solid black;
     border-left: none;
+    cursor: pointer;
 }
 .search-btn:hover{
     background-color: gold;
@@ -111,9 +112,36 @@
     font-size: 18;
     font-weight: 700;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-
+    cursor: pointer;
 }
 
-.add-movie-btn:hover{
+.add-movie-btn:hover, .logout-btn:hover{
     background-color: gold;
+}
+
+.logout-div{
+    position: absolute;
+    right: 30px;
+    gap: 15px;
+}
+
+.logged-username{
+    color: rgb(230, 230, 230);
+    background-color: rgb(51, 51, 51);
+    padding: 4px 4px 8px 8px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.logout-btn{
+    width: 100px;
+    height: 31px;
+    background-color: #ecc900;
+    color: black;
+    border: none;
+    border-radius: 0px 5px 5px 0px;
+    font-size: 18;
+    font-weight: 700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
 }

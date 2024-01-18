@@ -3,7 +3,7 @@ import './addMovieDialog.css';
 import { movie } from '../../models/movie';
 import { addMovie } from '../../services/services';
 
-function AddMovieDialog(){
+function AddMovieDialog({resetAddMoviesDialog}: {resetAddMoviesDialog: () => void}){
 
     const [ jsonErrorMsg, setJsonErrorMsg ] = useState('');
     const textRef = useRef<HTMLTextAreaElement>(null);
@@ -89,10 +89,11 @@ function AddMovieDialog(){
 
     return(
         <>
-            <h3>Insert movies in JSON format</h3>
+            <div className='json-cancel-button' onClick={resetAddMoviesDialog}></div>
+            <h3 className='json-title'>Insert movies in JSON format</h3>
             <textarea ref={textRef} className="json-input" placeholder={placeholderText}></textarea>
             <div className='jsonError'>{jsonErrorMsg}</div>
-            <button onClick={() => {textRef.current? addMovies(textRef.current.value):setJsonErrorMsg('input element undefined')}}>Add movies</button>
+            <button className='add-json-btn' onClick={() => {textRef.current? addMovies(textRef.current.value):setJsonErrorMsg('input element undefined')}}>Add movies</button>
         </>
     );
 }

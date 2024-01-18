@@ -6,7 +6,7 @@ import { loginUser, registerUser } from "../../services/services";
 
 function LoginSignup({props}:any){
 
-    const { isLoggedIn, setIsLoggedIn } = props;
+    const { setIsLoggedIn, setLoggedUsername } = props;
     const [ signupLogin , setSignupLogin ] = useState('signup');
     const [ errorMsg, setErrorMsg ] = useState('');
 
@@ -41,6 +41,7 @@ function LoginSignup({props}:any){
             }).then(data=>{
                 console.log(data);
                 setIsLoggedIn(true);
+                setLoggedUsername(data.username);
             }).catch(err => {
                 console.log(err);
             });
@@ -65,19 +66,6 @@ function LoginSignup({props}:any){
         }
 
     }
-
-    // function scrape(){
-    //     fetch("https://www.imdb.com/chart/top/")
-    //     .then(res=>{
-    //         if(res.ok){
-    //         return res.text();
-    //     }}).then(data=>{
-    //         if(data){
-    //             const dom = new DOMParser().parseFromString(data,'text/html');
-    //             console.log(dom)
-    //         }
-    //     })
-    // }
 
     return(
         <div className="container">

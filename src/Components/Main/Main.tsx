@@ -9,7 +9,7 @@ import { searchMovies } from "../../services/services";
 import Movie from "../Movies/Movie";
 
 
-function Main(){
+function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsername: string, resetLoggedUsername: ()=>void, setIsLoggedIn: (logged:boolean) => void}){
 
 
     const [ addMovieDialogActive, setAddMovieDialogActive ] = useState<boolean>(false);
@@ -24,7 +24,7 @@ function Main(){
             const movies: Array<movie> = [];
             searchMovies(input).then(data=>{
                 data.forEach((m: movie) => {
-                    console.log(m.id);
+                    //console.log(m.id);
                     movies.push(m);
 
                 });
@@ -35,6 +35,12 @@ function Main(){
 
     }
 
+    function logout(){
+        //fetch
+        setIsLoggedIn(false);
+        resetLoggedUsername();
+    }
+
     return(
     <>
         {(addMovieDialogActive || movieDetails)?
@@ -42,7 +48,7 @@ function Main(){
             <div className="dialog-content">
                 {
                 addMovieDialogActive? 
-                <AddMovieDialog/> : 
+                <AddMovieDialog resetAddMoviesDialog={() => setAddMovieDialogActive(false)}/> : 
                 movieDetails? 
                 <MovieDetailsDialog movieDetails={movieDetails} resetMovieDetails={()=>{setMovieDetails(null)}}/> 
                 : <></>
@@ -59,6 +65,11 @@ function Main(){
                 <button className="search-btn" onClick={() => {search(searchInputRef.current?.value)}}>
                     <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                 </button>
+            </div>
+
+            <div className="logout-div">
+                <b className="logged-username">{loggedUsername}</b>
+                <button className="logout-btn" onClick={logout}>Logout</button>
             </div>
         </div>
 

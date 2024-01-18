@@ -13,3 +13,75 @@
     border-radius: 10px;
 
 }
+
+.json-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.json-input{
+    width: 700px;
+    height: 400px;
+    resize: none;
+    border: 2px solid rgba(255, 255, 255, 0);
+    background-color: rgb(61, 61, 61);
+    color: rgb(160, 160, 160);
+}
+
+.json-input:focus{
+    outline: none !important;
+    border: 2px solid rgb(228, 194, 0);
+    margin-right: 0px;
+}
+
+.add-json-btn{
+    display: block;
+    width: 150px;
+    height: 50px;
+    background-color: #ecc900;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 18;
+    font-weight: 700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: auto;
+    margin-top: 70px;
+    cursor: pointer;
+}
+
+.add-json-btn:hover{
+    background-color: #ffd900;
+}
+
+.json-cancel-button{
+    z-index: 1;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 30px;
+    border-radius: 100%;
+}
+
+.json-cancel-button::before, .json-cancel-button::after{
+    position: absolute;
+    display: inline-block;
+    left: 15%;
+    top: 48%;
+    content: ' ';
+    width: 70%;
+    height: 3px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 5px;
+}
+.json-cancel-button:hover{
+    background-color: rgb(43, 43, 43);
+    cursor: pointer;
+}
+.json-cancel-button::before{
+    transform: rotate(45deg);
+}
+.json-cancel-button::after{
+    transform: rotate(-45deg);
+}
