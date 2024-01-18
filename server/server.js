@@ -208,6 +208,36 @@ app.get("/getRecommendedMovies", verifyToken, (req,res) => {
 
 })
 
+app.put("/rateMovie/:movieId/:rating", verifyToken, (req,res) => {
+    const userId = req.userId;
+    const movieId = req.params.movieId;
+    const rating = req.params.rating;
+
+    const session = driver.session();
+
+    const userExistsResult = session.run(`match (u:User) where elementId(u) = "${userId}" return u;`);
+    if(userExistsResult.records.length == 0){
+        res.status(404).send({message: 'User not found'});
+    }
+    const movieExistsResult = session.run(`match (m:Movie) where elementId(m) = "${movieId}" return m;`);
+    if(movieExistsResult.records.length == 0){
+        res.status(404).send({message: 'Movie not found'});
+    }
+
+    const rateResult = session.run(`
+    match (u:User) where elementId(u) = "${userId}" 
+    match (m:Movie) where elementId(m) = "${movieId}" 
+    merge (u)-[r:RATED]->(m) set r.rating = ${rating}  return r;`);
+
+    if(rateResult.records.length === 0){
+        res.status(500).send({message: "Error while adding rating"});
+        return;
+    }
+
+    res.status(200).send({message: "Rating added"});
+    
+})
+
 app.post("/addMovie", verifyToken, async (req,res)=>{
     console.log(req.body);
 

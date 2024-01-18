@@ -23,10 +23,11 @@
 }
 
 .cancel-button{
+    z-index: 1;
     position: absolute;
     width: 40px;
     height: 40px;
-    right: 0px;
+    right: 30px;
     border-radius: 100%;
 }
 
@@ -70,7 +71,11 @@
 }
 
 .details-desc{
+    display: block;
     margin-top: 30px;
+    margin-left: 30px;
+    margin-right: auto;
+    width: 700px;
 }
 
 .actors-div, .director-div{
@@ -79,15 +84,11 @@
     flex-wrap: wrap;
     margin-left: 20px;
     margin-top: 30px;
-    
+    align-items: center;
 }
 
-.rate-movie-btn{
-    display: block;
-    width: 200px;
-    height: 50px;
-    margin: auto;
-}
+
+
 
 .user-rating-div{
     display: flex;
@@ -96,6 +97,11 @@
     justify-content: center;
     gap: 5px;
     height: 150px;
+}
+
+.imdbr{
+    margin: auto;
+    margin-top: 20px;
 }
 
 /*rating stars*/
@@ -108,6 +114,51 @@
 .r-star:hover, .r-star:hover ~ .r-star{
     color: blue;
 }
+
+.rate-movie-btn{
+    background-color: #ecc900;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 18;
+    font-weight: 700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    display: block;
+    width: 200px;
+    height: 50px;
+    margin: auto;
+    cursor: pointer;
+
+}
+
+.rate-movie-btn:hover{
+    background-color: gold;
+}
+
+.name-div{
+    align-items: center;
+    text-align: center;
+    width: fit-content;
+    height: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 15px;
+    border: none;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    
+    background-color: #282828;
+    color: white;
+    cursor: pointer;
+  }
+
+  .name-div:hover{
+    background-color: gold;
+    color: black;
+  }
 
 
 /*--------------------------*/
@@ -127,17 +178,14 @@
 /* The star of the show */
 .rate > label:before {
     display: inline-block;
-    font-size: 1.1rem;
+    font-size: 30px;
     padding: .3rem .2rem;
     margin: 0;
     cursor: pointer;
     font-family: FontAwesome;
     content: "\f005"; /* full star */
 }
-/* Zero stars rating */
-.rate > label:last-child:before {
-    content: "\f006"; /* empty star outline */
-}
+
 /* Half star trick */
 .rate .half:before {
     content: "\f089 "; /* half star no outline */
@@ -146,13 +194,10 @@
 }
 /* Click + hover color */
 input:checked ~ label, /* color current and previous stars on checked */
-label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
+label:hover, label:hover ~ label { color: gold;  } /* color previous stars on hover */
 
 /* Hover highlights */
 input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
 input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
-label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  }
+label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: rgb(255, 223, 39);  }
 
-.rate > label{
-    
-}

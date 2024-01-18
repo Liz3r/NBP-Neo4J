@@ -36,8 +36,9 @@
 }
 
 .dialog-content{
-    width: 65vw;
-    height: 65vh;
+    max-width: 1050px;
+    position: relative;
+    min-height: 65vh;
     border-radius: 25px;
     padding: 30px;
     border: none;

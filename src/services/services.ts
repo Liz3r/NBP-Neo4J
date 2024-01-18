@@ -60,3 +60,19 @@ export function getMovieDetails(id: string){
         }
     })
 }
+
+export function rateMovie(id: string, rating: number){
+    if(id !== ''){
+        return fetch(`${URL}/rateMovie/${id}/${rating}`, {
+            method: 'PUT',
+            credentials: "include"
+            }).then(res=>{
+            if(res.ok){
+                return res.json();
+            }
+        })
+    }else{
+        return null;
+    }
+    
+}
