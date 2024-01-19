@@ -109,3 +109,14 @@ export function getMovies(){
         }
     })
 }
+
+export function getRecommendedMovies(){
+    return fetch(`${URL}/getRecommendedMovies`, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(res=>{
+        if(res.ok){
+            return res.json();
+        }
+    })
+}

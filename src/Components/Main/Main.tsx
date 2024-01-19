@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MovieDetailsDialog from "../MovieDetailsDialog/MovieDetailsDialog";
 import AddMovieDialog from "../AddMovieDialog/AddMovieDialog";
 import { movie } from "../../models/movie";
-import { getMovies, getMoviesByDirector, getMoviesWithActor, searchMovies } from "../../services/services";
+import { getMovies, getMoviesByDirector, getMoviesWithActor, getRecommendedMovies, searchMovies } from "../../services/services";
 import Movie from "../Movies/Movie";
 import useScrollBlock from "../../scrollBlock";
 
@@ -83,6 +83,17 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
             });
     }
 
+    function getRecommendations(){
+        const movies: Array<movie> = [];
+            getRecommendedMovies()?.then(data=>{
+                if(data)
+                data.forEach((m: movie) => {
+                    movies.push(m);
+                });
+                setMoviesList(movies);
+            });
+    }
+
     function logout(){
         document.cookie = `jwt=;username=;expires=${new Date(0).toUTCString()}; path=/;`;
         document.cookie = `username=;expires=${new Date(0).toUTCString()}; path=/;`;
@@ -112,7 +123,7 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
         }
         <div className='search-div'>
             <button className="add-movie-btn" onClick={()=>{blockScroll();setAddMovieDialogActive(true);}}>Add movie</button>
-            <button className="show-btn">Show Recommendations</button>
+            <button className="show-btn" onClick={getRecommendations}>Show Recommendations</button>
             <div className='search-input-div'>
                 <input placeholder='Search' className='search-input' ref={searchInputRef}></input>
                 <button className="search-btn" onClick={() => {search(searchInputRef.current?.value)}}>
@@ -127,7 +138,7 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
         </div>
 
         <div className='movies-div'>
-            {moviesList?.map((m) => <Movie movie={m} setMovieDetails={(md: null | {movie: movie, userRated: boolean, userRating: number})=>{blockScroll();setMovieDetails(md);}} key={m.title}/>)}
+            {moviesList?.map((m) => <Movie movie={m} setMovieDetails={(md: null | {movie: movie, userRated: boolean, userRating: number})=>{window.scrollTo(0,0);blockScroll();setMovieDetails(md);}} key={m.title}/>)}
          </div>
     </>
     );

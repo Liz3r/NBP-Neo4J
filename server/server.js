@@ -237,7 +237,7 @@ app.get("/getMovies", verifyToken, async (req,res)=>{
     if(result.records[0].get(0) == undefined){
         res.send(404).send({message: 'error: no movies found'});
     }
-    
+
     var moviesList = [];
     result.records.forEach(record => {
         const movie = {
@@ -254,7 +254,88 @@ app.get("/getMovies", verifyToken, async (req,res)=>{
     res.status(200).send(moviesList);
 })
 
-app.get("/getRecommendedMovies", verifyToken, (req,res) => {
+app.get("/getRecommendedMovies", verifyToken, async (req,res) => {
+
+    //pribavlja sve korisnike koji su ocenili iste filmove kao i korisnik koji poziva f-ju i vraca listu u formatu:
+    // (ime korisnika koji je ocenio isti film, razlika u oceni izmedju tog korisnika i korisnika koji je pozvao f-ju)
+    // ovako za svaku relaciju tj. pattern (takav da su i korisnik trazilac i drugi korisnik ocenili isti film)
+    
+    const userId = req.userId;
+
+    const session = driver.session();
+
+    const similarUsersResult = await session.run(`match (u:User) where elementId(u)="${userId}" match (u)-[r1:RATED]->(m:Movie)<-[r2:RATED]-(otherUser:User) return otherUser.username, TOFLOAT(abs(r1.rating - r2.rating));`);
+
+    if(similarUsersResult.records[0].get(0) == undefined){
+        res.status(404).send({message: "No similar users found"});
+        return;
+    }
+    // similarUsersResult.records.forEach(record=>{
+    //     console.log(record.get(0), record.get(1));
+    // })
+
+    const map = similarUsersResult.records
+    .map((record)=> {return {username: record.get(0), ratingDiff: record.get(1)}})
+    .reduce((mapping, record) => {
+        
+        if(mapping[record.username]){
+            mapping[record.username] = { 
+                ratingDiffSum: mapping[record.username].ratingDiffSum += record.ratingDiff, 
+                relationsCount: mapping[record.username].relationsCount+1};
+        }else{
+            mapping[record.username] = { ratingDiffSum: record.ratingDiff, relationsCount: 1}
+        }
+        return mapping;
+    },{});
+
+    //u map se na kraju nalazi rezultat oblika:
+        // {
+        //     korisnik3: { ratingDiffSum: 2.5, relationsCount: 4 },
+        //     korisnik4: { ratingDiffSum: 2, relationsCount: 1 },
+        //     ...
+        // }
+    const scoreList = [];
+
+    for(let k in map){
+        scoreList.push({username: k, score: ((map[k].ratingDiffSum/map[k].relationsCount) + (0.2*map[k].relationsCount))});
+    }
+    //rezultat je lista oblika:
+    //   [
+    //    { username: 'korisnik3', score: 1.425 },
+    //    { username: 'korisnik4', score: 2.2 }
+    //   ]
+
+    //sortiranje liste (najmanji score - najslicniji korisnik)
+    scoreList.sort((a,b)=> a.score - b.score);
+
+    let index = 0;
+    var moviesList = [];
+    do{
+    
+        const name = scoreList.at(index).username;
+
+        const res = await session.run(`
+        match (u:User) where elementId(u)='${userId}' 
+        match (u2:User {username: '${name}'}) match (m:Movie) where not (u)-[:RATED]->(m) 
+        match (u2)-[r:RATED]->(m) where r.rating > 6 return m;`); //vraca filmove koje su slicni korisnici gledali a korisnik trazilac nije gledao (da su ih pritom korisnici ocenili sa 6.0+ )
+        
+        res.records.forEach(record => {
+        
+            const movie = {
+                id: record.get(0).elementId,
+                title: record.get(0).properties.title,
+                year: record.get(0).properties.year,
+                genre: record.get(0).properties.genre,
+                rating: record.get(0).properties.rating,
+                imgSource: record.get(0).properties.imgSource
+            }
+            moviesList.push(movie);
+        });
+
+        index++;
+    }while(index < scoreList.length);
+
+    res.status(200).send(moviesList);
 
 })
 

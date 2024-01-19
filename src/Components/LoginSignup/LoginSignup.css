@@ -3,7 +3,8 @@
     flex-direction: column;
     margin: auto;
     margin-top: 200px;
-    background-color: white;
+    background-color: #303030;
+    box-shadow: 5px 5px 8px black;
     padding-bottom: 30px;
     width: 600px;
     border-radius: 15px;
@@ -16,7 +17,7 @@
     gap: 10px;
     width: 100%;
     margin-top: 30px;
-    color: rgb(63, 22, 87);
+    color: rgb(233, 198, 0);
 }
 
 .text{
@@ -37,14 +38,14 @@
     margin: auto;
     width: 500px;
     height: 70;
-    background-color: rgb(214, 213, 213);
+    background-color: rgb(73, 73, 73);
+    color: rgb(92, 92, 92);
     border-radius: 6px;
 }
 
 .icon{
     margin-left: 20px;
     margin-right: 20px;
-    color: rgb(121, 118, 118);
 }
 
 .input input{
@@ -52,14 +53,14 @@
     width: 400px;
     background-color: transparent;
     border: none;
-    color: rgb(121, 118, 118);
+    color: rgb(196, 196, 196);
     font-size: 20px;
     
 }
 
 .underline{
     width: 100px;
-    background-color: rgb(63, 22, 87);
+    background-color: gold;
     height: 4px;
     border-radius: 10px;
 }
@@ -81,8 +82,8 @@
     align-items: center;
     width: 200px;
     height: 60px;
-    color: white;
-    background-color: rgb(63, 22, 87);
+    color: black;
+    background-color: gold;
     border-radius: 50px;
     font-size: 20px;
     font-weight: 700;
