@@ -146,3 +146,22 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     cursor: pointer;
 }
+
+.show-btn{
+    position: absolute;
+    left: 145px;
+    width: 200px;
+    height: 25px;
+    background-color: #ecc900;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 18;
+    font-weight: 700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+}
+
+.show-btn:hover{
+    background-color: gold;
+}

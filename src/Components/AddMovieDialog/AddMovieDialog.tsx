@@ -7,14 +7,17 @@ function AddMovieDialog({resetAddMoviesDialog}: {resetAddMoviesDialog: () => voi
 
     const [ jsonErrorMsg, setJsonErrorMsg ] = useState('');
     const textRef = useRef<HTMLTextAreaElement>(null);
-    
-
 
     function addMovies(value: string){
 
         //regExp check
+        const re = /\[\s*(\{(\s*\"[a-zA-Z]+\"\s*:\s*\".+\"\s*,\s*)+(\s*\"[a-zA-Z]+\"\s*:\s*\".+\"\s*)\}\s*,\s*)+\{(\s*\"[a-zA-Z]+\"\s*:\s*\".+\"\s*,\s*)+(\s*\"[a-zA-Z]+\"\s*:\s*\".+\"\s*)\}\s*\]\s*/g;
+        if(!value.match(re)){
+            setJsonErrorMsg('Invalid JSON input');
+            return;
+        }
+
         const moviesList: Array<movie> = JSON.parse(value);
-        //console.log(obj);
 
         var err = false;
         moviesList.forEach( (m,index) => {

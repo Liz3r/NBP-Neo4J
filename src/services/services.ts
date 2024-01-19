@@ -98,3 +98,14 @@ export function getMoviesWithActor(actor: string){
         return null;
     }
 }
+
+export function getMovies(){
+    return fetch(`${URL}/getMovies`, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(res=>{
+        if(res.ok){
+            return res.json();
+        }
+    })
+}

@@ -1,1 +1,0 @@
-create (m:Movie {name: "", rating: 8, imgSource: "", year: })

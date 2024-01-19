@@ -44,15 +44,16 @@ app.post('/register/:username/:email/:password', async (req, res) =>{
 
 
     const result = await session.run(`match (u:User {email: '${email}'}) return u;`);
-    session.close();
     if(result.records.length === 0){
         console.log(result.records.length);
         const createResult = await session.run(`create (u:User {username: '${username}', email: '${email}', password: '${passwordHash}'}) return u;`);
+        session.close();
         if(createResult.records.length !== 0){
             const props = createResult.records[0].get(0).properties;
             res.status(200).send({message: "User registred"});
         }
     }else{
+        session.close();
         res.status(409).send({message: "User already exists"});
     }
 })
@@ -175,10 +176,6 @@ app.get("/getMoviesBySearch/:search", verifyToken, async (req,res)=>{
 
 })
 
-app.get("/getMovieDetails/:title", verifyToken, (req,res)=>{
-    
-})
-
 app.get("/getMoviesWithActor/:actor", verifyToken, async (req,res)=>{
 
     const actor = req.params.actor;
@@ -217,6 +214,30 @@ app.get("/getMoviesByDirector/:director", verifyToken, async (req,res)=>{
         res.send(404).send({message: 'error: no movies found'});
     }
 
+    var moviesList = [];
+    result.records.forEach(record => {
+        const movie = {
+            id: record.get(0).elementId,
+            title: record.get(0).properties.title,
+            year: record.get(0).properties.year,
+            genre: record.get(0).properties.genre,
+            rating: record.get(0).properties.rating,
+            imgSource: record.get(0).properties.imgSource
+        }
+        moviesList.push(movie);
+    });
+
+    res.status(200).send(moviesList);
+})
+
+app.get("/getMovies", verifyToken, async (req,res)=>{
+    const session = driver.session();
+    const result = await session.run("match (m:Movie) return m;");
+
+    if(result.records[0].get(0) == undefined){
+        res.send(404).send({message: 'error: no movies found'});
+    }
+    
     var moviesList = [];
     result.records.forEach(record => {
         const movie = {

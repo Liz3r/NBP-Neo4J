@@ -1,11 +1,11 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Main.css';
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MovieDetailsDialog from "../MovieDetailsDialog/MovieDetailsDialog";
 import AddMovieDialog from "../AddMovieDialog/AddMovieDialog";
 import { movie } from "../../models/movie";
-import { getMoviesByDirector, getMoviesWithActor, searchMovies } from "../../services/services";
+import { getMovies, getMoviesByDirector, getMoviesWithActor, searchMovies } from "../../services/services";
 import Movie from "../Movies/Movie";
 import useScrollBlock from "../../scrollBlock";
 
@@ -22,8 +22,16 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
 
     const searchInputRef = useRef<HTMLInputElement>(null);
 
+
+    useEffect(()=>{
+        getRandMovies();
+    },[])
+
     function search(input: string | undefined){
-        if(input){
+        if(input == ''){
+            getRandMovies();
+        }
+        else if(input){
             const movies: Array<movie> = [];
             searchMovies(input).then(data=>{
                 data.forEach((m: movie) => {
@@ -63,10 +71,19 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
             });
         }
     }
-    
+
+    function getRandMovies(){
+        const movies: Array<movie> = [];
+            getMovies()?.then(data=>{
+                if(data)
+                data.forEach((m: movie) => {
+                    movies.push(m);
+                });
+                setMoviesList(movies);
+            });
+    }
 
     function logout(){
-        //fetch
         document.cookie = `jwt=;username=;expires=${new Date(0).toUTCString()}; path=/;`;
         document.cookie = `username=;expires=${new Date(0).toUTCString()}; path=/;`;
         setIsLoggedIn(false);
@@ -95,6 +112,7 @@ function Main({loggedUsername, resetLoggedUsername, setIsLoggedIn}: {loggedUsern
         }
         <div className='search-div'>
             <button className="add-movie-btn" onClick={()=>{blockScroll();setAddMovieDialogActive(true);}}>Add movie</button>
+            <button className="show-btn">Show Recommendations</button>
             <div className='search-input-div'>
                 <input placeholder='Search' className='search-input' ref={searchInputRef}></input>
                 <button className="search-btn" onClick={() => {search(searchInputRef.current?.value)}}>
