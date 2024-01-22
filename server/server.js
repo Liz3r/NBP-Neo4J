@@ -234,7 +234,7 @@ app.get("/getMovies", verifyToken, async (req,res)=>{
     const session = driver.session();
     const result = await session.run("match (m:Movie) return m;");
 
-    if(result.records[0].get(0) == undefined){
+    if(result.records[0] && result.records[0].get(0) == undefined){
         res.send(404).send({message: 'error: no movies found'});
     }
 

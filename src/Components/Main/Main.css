@@ -37,6 +37,7 @@
 
 .dialog-content{
     max-width: 1050px;
+	z-index: 3;
     position: relative;
     min-height: 65vh;
     border-radius: 25px;
